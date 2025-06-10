@@ -414,6 +414,10 @@ def main_app():
         # Report/Visualization for data files
         if 'df' in locals() and isinstance(df, pd.DataFrame):
             
+            
+            if st.session_state.get("auto_generate", False):
+                ydata(df)
+                st.session_state.auto_generate = False  # reset flag after displaying report
             # Initialize session state
             if "chatbot" not in st.session_state:
                 st.session_state.chatbot = False
@@ -428,14 +432,21 @@ def main_app():
             
             try:
                 df.to_sql(table_name, engine, if_exists='replace', index=False)
-                st.success(f"{table_name} created in database")
             except Exception as e:
                 st.write(f"Unable to commit to database {e}")
             
             with st.sidebar:
-                auto_generate = st.button("Auto-Generate Report")
-                if st.button('Chat With Your File'):
+                def trigger_auto_generate():
+                    st.session_state.auto_generate = True
+                    st.session_state.chatbot = False  # Turn off chatbot when switching
+                
+                def trigger_chatbot():
                     st.session_state.chatbot = True
+                    st.session_state.auto_generate = False  # Turn off auto report when switching
+                
+                with st.sidebar:
+                    st.button("Auto-Generate Report", on_click=trigger_auto_generate)
+                    st.button("Chat With Your File", on_click=trigger_chatbot)
             
             if st.session_state.chatbot:
                 with st.expander("💬 Ask the AI About Your Data", expanded=True):
@@ -461,9 +472,7 @@ def main_app():
                             
                             st.success("Response saved to your chat history!")
             
-            if auto_generate:
-                st.session_state.chatbot = False
-                ydata(df)
+           
 
 # ------------------ Main Execution ------------------
 if __name__ == "__main__":
