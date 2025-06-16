@@ -40,7 +40,7 @@ def load_encoder():
     if any(t.is_meta for t in model.parameters()):
         model = model.to_empty('cpu')
     else:
-        model = model.to('cpu')
+        model = model.to_empty('cpu')
     return model
 
 model = load_encoder()
