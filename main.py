@@ -9,6 +9,7 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 import json
+import torch
 from groq import Groq
 from docx import Document
 import plotly.express as px
@@ -34,7 +35,7 @@ def load_encoder():
     return SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
 
 model = load_encoder()
-
+torch.set_default_tensor_type('torch.FloatTensor')
 # ------------------ Database Setup ------------------
 def init_database():
     """Initialize database tables for users and chat history"""
