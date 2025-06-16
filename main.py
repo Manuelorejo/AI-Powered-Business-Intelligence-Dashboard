@@ -32,15 +32,13 @@ api_key = os.getenv("api_key")
 engine = create_engine("sqlite:///data_storage.db")
 @st.cache_resource
 def load_encoder():
-     # Set tensor type first
-    torch.set_default_tensor_type('torch.FloatTensor')
-    # Load model with explicit device mapping
-    model = SentenceTransformer("paraphrase-MiniLM-L3-v2")
-    # Explicitly move to CPU if needed
-    if any(t.is_meta for t in model.parameters()):
-        model = model.to_empty('cpu')
-    else:
-        model = model.to_empty('cpu')
+    # Avoid meta tensor issues by forcing weights to load on CPU
+    model_name = "paraphrase-MiniLM-L3-v2"
+    model = SentenceTransformer(model_name)
+    
+    # Force load all parameters to CPU to avoid meta-tensor problems
+    model.to(torch.device("cpu"))
+    
     return model
 
 model = load_encoder()
