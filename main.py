@@ -19,7 +19,7 @@ from sqlalchemy import create_engine
 import hashlib
 import sqlite3
 
-
+torch.set_default_tensor_type('torch.FloatTensor')
 
 st.set_page_config(layout='wide')
 
@@ -35,7 +35,7 @@ def load_encoder():
     return SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
 
 model = load_encoder()
-torch.set_default_tensor_type('torch.FloatTensor')
+
 # ------------------ Database Setup ------------------
 def init_database():
     """Initialize database tables for users and chat history"""
