@@ -18,6 +18,7 @@ import streamlit.components.v1 as components
 from sqlalchemy import create_engine
 import hashlib
 import sqlite3
+from transformers import AutoTokenizer, AutoModel
 
 torch.set_default_tensor_type('torch.FloatTensor')
 
@@ -32,14 +33,17 @@ api_key = os.getenv("api_key")
 engine = create_engine("sqlite:///data_storage.db")
 @st.cache_resource
 def load_encoder():
-    # Avoid meta tensor issues by forcing weights to load on CPU
     model_name = "paraphrase-MiniLM-L3-v2"
-    model = SentenceTransformer(model_name)
     
-    # Force load all parameters to CPU to avoid meta-tensor problems
-    model.to(torch.device("cpu"))
+    # Load transformers manually
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModel.from_pretrained(model_name, torch_dtype=torch.float32)
+
+    # Wrap in SentenceTransformer
+    sbert_model = SentenceTransformer(modules=[model])
+    sbert_model.to("cpu")
     
-    return model
+    return sbert_model
 
 model = load_encoder()
 
