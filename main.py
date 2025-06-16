@@ -32,7 +32,16 @@ api_key = os.getenv("api_key")
 engine = create_engine("sqlite:///data_storage.db")
 @st.cache_resource
 def load_encoder():
-    return SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
+     # Set tensor type first
+    torch.set_default_tensor_type('torch.FloatTensor')
+    # Load model with explicit device mapping
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+    # Explicitly move to CPU if needed
+    if any(t.is_meta for t in model.parameters()):
+        model = model.to_empty('cpu')
+    else:
+        model = model.to('cpu')
+    return model
 
 model = load_encoder()
 
