@@ -33,7 +33,7 @@ api_key = os.getenv("api_key")
 engine = create_engine("sqlite:///data_storage.db")
 @st.cache_resource
 def load_encoder():
-    model_name = "paraphrase-MiniLM-L3-v2"
+    model_name = "all-MiniLM-L6-v2"
     
     # Load transformers manually
     tokenizer = AutoTokenizer.from_pretrained(model_name)
