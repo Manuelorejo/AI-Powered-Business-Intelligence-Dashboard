@@ -29,7 +29,11 @@ api_key = os.getenv("api_key")
 
 # Database engine
 engine = create_engine("sqlite:///data_storage.db")
-model = SentenceTransformer("all-MiniLM-L6-v2")
+@st.cache_resource
+def load_encoder():
+    return SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
+
+model = load_encoder()
 
 # ------------------ Database Setup ------------------
 def init_database():
