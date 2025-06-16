@@ -299,7 +299,7 @@ Answer:
 
     # Run chat completion
     completion = client.chat.completions.create(
-        model="meta-llama/llama-4-scout-17b-16e-instruct",
+        model="meta-llama/llama-2-7b-chat-hf",
         messages=[
             {"role": "user", "content": prompt}
         ],
