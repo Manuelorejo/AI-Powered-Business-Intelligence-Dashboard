@@ -35,7 +35,7 @@ def load_encoder():
      # Set tensor type first
     torch.set_default_tensor_type('torch.FloatTensor')
     # Load model with explicit device mapping
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+    model = SentenceTransformer("paraphrase-MiniLM-L3-v2")
     # Explicitly move to CPU if needed
     if any(t.is_meta for t in model.parameters()):
         model = model.to_empty('cpu')
